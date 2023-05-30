@@ -1,4 +1,5 @@
 const Proto = require('uberproto')
+const qs = require('qs')
 
 const getService = require('./get-service')
 const getArgs = require('./get-args')
@@ -45,7 +46,9 @@ module.exports = feathersApp => {
           body: bodyAsString
         } = event
 
-        const query = event.queryStringParameters || {}
+        const query = event.rawQueryString
+          ? qs.parse(event.rawQueryString)
+          : event.queryStringParameters || {}
 
         const body = bodyAsString
           ? JSON.parse(bodyAsString)
