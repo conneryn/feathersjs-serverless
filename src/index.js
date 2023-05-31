@@ -42,19 +42,27 @@ module.exports = feathersApp => {
 
         const {
           resource,
-          httpMethod: method,
-          body: bodyAsString
+          path: basePath,
+          rawPath,
+          httpMethod: baseMethod,
+          body: bodyAsString,
+          requestContext,
+          rawQueryString,
+          queryStringParameters
         } = event
 
-        const query = event.rawQueryString
-          ? qs.parse(event.rawQueryString)
-          : event.queryStringParameters || {}
+        const path = resource || basePath || rawPath || requestContext?.http?.path
+        const method = baseMethod || requestContext?.http?.method
+
+        const query = rawQueryString
+          ? qs.parse(rawQueryString)
+          : queryStringParameters || {}
 
         const body = bodyAsString
           ? JSON.parse(bodyAsString)
           : {}
 
-        const { service: serviceName, feathersId } = getService(self, resource)
+        const { service: serviceName, feathersId } = getService(self, path)
 
         if (!serviceName || !self.service(serviceName)) {
           return cb(null, {
