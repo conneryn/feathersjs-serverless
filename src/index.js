@@ -1,5 +1,6 @@
 const Proto = require('uberproto')
 const qs = require('qs')
+const { parse } = require('express-query-parser')
 
 const getService = require('./get-service')
 const getArgs = require('./get-args')
@@ -54,9 +55,17 @@ module.exports = feathersApp => {
         const path = resource || basePath || rawPath || requestContext?.http?.path
         const method = baseMethod || requestContext?.http?.method
 
-        const query = rawQueryString
+        const queryStrings = rawQueryString
           ? qs.parse(rawQueryString)
           : queryStringParameters || {}
+
+        // convert query values
+        const query = parse(queryStrings, {
+          parseNull: true,
+          parseUndefined: true,
+          parseBoolean: true,
+          parseNumber: true
+        })
 
         const body = bodyAsString
           ? JSON.parse(bodyAsString)
