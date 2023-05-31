@@ -20,7 +20,7 @@ test('people service', () => {
 
 test('people service with id', () => {
   const { feathersId, service } = getService(feathersApp, '/people/1234')
-  expect(feathersId).toEqual('1234')
+  expect(feathersId).toStrictEqual(1234)
   expect(service).toBe('people')
 })
 
@@ -32,6 +32,18 @@ test('people/shirts service', () => {
 
 test('people/shirts service with id', () => {
   const { feathersId, service } = getService(feathersApp, '/people/shirts/1234')
-  expect(feathersId).toEqual('1234')
+  expect(feathersId).toStrictEqual(1234)
+  expect(service).toBe('people/shirts')
+})
+
+test('people/shirts service with non-numeric id', () => {
+  const { feathersId, service } = getService(feathersApp, '/people/shirts/red')
+  expect(feathersId).toStrictEqual('red')
+  expect(service).toBe('people/shirts')
+})
+
+test('people/shirts service with non-numeric id that is a number', () => {
+  const { feathersId, service } = getService(feathersApp, '/people/shirts/"12"')
+  expect(feathersId).toStrictEqual('12')
   expect(service).toBe('people/shirts')
 })

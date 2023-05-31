@@ -1,10 +1,10 @@
 const Proto = require('uberproto')
 const qs = require('qs')
-const { parse } = require('express-query-parser')
 
 const getService = require('./get-service')
 const getArgs = require('./get-args')
 const { getFeathersMethod } = require('./methods')
+const queryParser = require('./qs-parser')
 
 module.exports = feathersApp => {
   const mixin = {
@@ -60,7 +60,7 @@ module.exports = feathersApp => {
           : queryStringParameters || {}
 
         // convert query values
-        const query = parse(queryStrings, {
+        const query = queryParser(queryStrings, {
           parseNull: true,
           parseUndefined: true,
           parseBoolean: true,
